@@ -101,10 +101,19 @@ public class OneMeasurementHdrHistogram extends OneMeasurement {
       // we can close now
       log.close();
     }
+    long violation_count = totalHistogram.getCountBetweenValues(100000, Integer.MAX_VALUE);
+    long total_count = totalHistogram.getTotalCount();
+    double violation_percentage = 0;
+    if(total_count != 0){
+      violation_percentage = (float)violation_count / total_count;
+    }
     exporter.write(getName(), "Operations", totalHistogram.getTotalCount());
     exporter.write(getName(), "AverageLatency(us)", totalHistogram.getMean());
     exporter.write(getName(), "MinLatency(us)", totalHistogram.getMinValue());
     exporter.write(getName(), "MaxLatency(us)", totalHistogram.getMaxValue());
+    exporter.write(getName(), "Violations count", violation_count);
+    exporter.write(getName(), "Violations percentage", violation_percentage);
+
 
     for (Double percentile : percentiles) {
       exporter.write(getName(), ordinal(percentile) + "PercentileLatency(us)",
@@ -130,11 +139,11 @@ public class OneMeasurementHdrHistogram extends OneMeasurement {
     }
     long violation_count = intervalHistogram.getCountBetweenValues(100000, Integer.MAX_VALUE);
     long total_count = intervalHistogram.getTotalCount();
-    float violation_percentage = 0;
+    double violation_percentage = 0;
     if(total_count != 0){
       violation_percentage = (float)violation_count / total_count;
     }
-    DecimalFormat d = new DecimalFormat("#.##");
+    DecimalFormat d = new DecimalFormat("#.###");
     return "[" + getName() + ": Count=" + intervalHistogram.getTotalCount() + ", Max="
         + intervalHistogram.getMaxValue() + ", Min=" + intervalHistogram.getMinValue() + ", Avg="
         + d.format(intervalHistogram.getMean()) + ", 90=" + d.format(intervalHistogram.getValueAtPercentile(90))
