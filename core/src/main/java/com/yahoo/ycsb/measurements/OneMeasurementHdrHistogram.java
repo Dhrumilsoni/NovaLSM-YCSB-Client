@@ -128,14 +128,21 @@ public class OneMeasurementHdrHistogram extends OneMeasurement {
     if (histogramLogWriter != null) {
       histogramLogWriter.outputIntervalHistogram(intervalHistogram);
     }
-
+    long violation_count = intervalHistogram.getCountBetweenValues(100000, Integer.MAX_VALUE);
+    long total_count = intervalHistogram.getTotalCount();
+    float violation_percentage = 0;
+    if(total_count != 0){
+      violation_percentage = (float)violation_count / total_count;
+    }
     DecimalFormat d = new DecimalFormat("#.##");
     return "[" + getName() + ": Count=" + intervalHistogram.getTotalCount() + ", Max="
         + intervalHistogram.getMaxValue() + ", Min=" + intervalHistogram.getMinValue() + ", Avg="
         + d.format(intervalHistogram.getMean()) + ", 90=" + d.format(intervalHistogram.getValueAtPercentile(90))
         + ", 99=" + d.format(intervalHistogram.getValueAtPercentile(99)) + ", 99.9="
         + d.format(intervalHistogram.getValueAtPercentile(99.9)) + ", 99.99="
-        + d.format(intervalHistogram.getValueAtPercentile(99.99)) + "]";
+        + d.format(intervalHistogram.getValueAtPercentile(99.99)) + ", Violations count="
+            + violation_count + ", Violations percentage="
+            + d.format(violation_percentage) +"]";
   }
 
   private Histogram getIntervalHistogramAndAccumulate() {
