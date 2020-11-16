@@ -2,9 +2,9 @@
 
 sudo apt-get update
 sudo apt-get --yes install maven
-# sudo apt-get install -y openjdk-8-jdk
-# sudo update-alternatives --config java
-# sudo update-alternatives --config javac
+#sudo apt-get install -y openjdk-8-jdk
+#sudo update-alternatives --config java
+#sudo update-alternatives --config javac
 
 sudo apt-get install -y memcached
 sudo apt-get install -y sysstat
