@@ -751,6 +751,7 @@ public final class Client {
         workload, tracer, completeLatch);
 
     if (status) {
+      System.out.println("Status is True");
       boolean standardstatus = false;
       if (props.getProperty(Measurements.MEASUREMENT_TYPE_PROPERTY, "").compareTo("timeseries") == 0) {
         standardstatus = true;
