@@ -45,6 +45,7 @@ public class ConfigurationUtil {
 	}
 
 	public static Configurations readConfig(String configPath) {
+		System.out.println("configuration read");
 		Configurations config = new Configurations();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(new File(configPath)));

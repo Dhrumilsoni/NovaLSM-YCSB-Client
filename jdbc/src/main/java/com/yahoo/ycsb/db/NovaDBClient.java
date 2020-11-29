@@ -46,7 +46,7 @@ public class NovaDBClient extends DB {
 
 	long startTime = 0;
 	long endTime = 0;
-
+	String config_path;
 	int offset = 0;
 
 	public static String generateRandomString(Random random, long valueSize) {
@@ -96,7 +96,7 @@ public class NovaDBClient extends DB {
 		debug = Boolean.parseBoolean(props.getProperty("debug"));
 		String strPartition = props.getProperty("partition");
 		valueSize = Integer.parseInt(props.getProperty("valuesize"));
-		String config_path = props.getProperty("config_path");
+		config_path = props.getProperty("config_path");
 		config = ConfigurationUtil.readConfig(config_path);
 		numberOfRecords = Integer.parseInt(props.getProperty("recordcount"));
 		cardinality = Integer.parseInt(props.getProperty("cardinality"));
@@ -167,6 +167,14 @@ public class NovaDBClient extends DB {
 			int homeServerId = config.current().fragments.get(fragmentId).ltcServerId;
 			retVal = novaClient.get(clientConfigId, key, homeServerId);
 			if (retVal.configId != clientConfigId) {
+				System.out.println("config id mismatch read");
+				if (config.configs.size() <= retVal.configId) {
+					System.out.println("Reading config file");
+					config = ConfigurationUtil.readConfig(config_path);
+					System.out.println("config id: "+Integer.toString(retVal.configId));
+					System.out.println("client config id: "+Integer.toString(clientConfigId));
+				}
+				assert(config.configs.size()>=retVal.configId);
 				config.configurationId.set(retVal.configId);
 				continue;
 			} else {
@@ -210,6 +218,8 @@ public class NovaDBClient extends DB {
 
 				if (retVal.configId != clientConfigId) {
 					retry = true;
+					if (config.configs.size() <= retVal.configId)
+						config = ConfigurationUtil.readConfig(config_path);
 					config.configurationId.set(retVal.configId);
 					break;
 				}
@@ -292,6 +302,8 @@ public class NovaDBClient extends DB {
 			retVal = novaClient.put(clientConfigId, key, value, serverId);
 
 			if (retVal.configId != clientConfigId) {
+				if (config.configs.size() <= retVal.configId)
+					config = ConfigurationUtil.readConfig(config_path);
 				config.configurationId.set(retVal.configId);
 				continue;
 			} else {
