@@ -53,6 +53,8 @@ public class ConfigurationUtil {
 
 			Configuration cfg = new Configuration();
 			while ((line = br.readLine()) != null) {
+//				System.out.println(line.replaceAll("\n", ""));
+//				System.out.println(line.replaceAll("\n", "").isEmpty());
 				if (line.replaceAll("\n", "").isEmpty()){
 					continue;
 				}
