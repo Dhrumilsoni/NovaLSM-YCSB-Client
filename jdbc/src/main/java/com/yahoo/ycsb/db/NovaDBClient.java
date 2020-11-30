@@ -167,12 +167,8 @@ public class NovaDBClient extends DB {
 			int homeServerId = config.current().fragments.get(fragmentId).ltcServerId;
 			retVal = novaClient.get(clientConfigId, key, homeServerId);
 			if (retVal.configId != clientConfigId) {
-				System.out.println("config id mismatch read");
 				if (config.configs.size() <= retVal.configId) {
-					System.out.println("Reading config file");
 					config = ConfigurationUtil.readConfig(config_path);
-					System.out.println("config id: "+Integer.toString(retVal.configId));
-					System.out.println("client config id: "+Integer.toString(clientConfigId));
 				}
 				assert(config.configs.size()>=retVal.configId);
 				config.configurationId.set(retVal.configId);

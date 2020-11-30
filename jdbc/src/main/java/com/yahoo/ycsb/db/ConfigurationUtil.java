@@ -53,6 +53,9 @@ public class ConfigurationUtil {
 
 			Configuration cfg = new Configuration();
 			while ((line = br.readLine()) != null) {
+				if (line.replaceAll("\n", "").isEmpty()){
+					continue;
+				}
 				if (line.contains("config")) {
 					if (!cfg.fragments.isEmpty()) {
 						config.configs.add(cfg);
